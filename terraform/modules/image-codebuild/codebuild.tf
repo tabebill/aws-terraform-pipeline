@@ -1,3 +1,72 @@
+resource "aws_iam_policy" "s3_full_access" {
+  name = "S3_Full_Access_Policy"
+  description = "Policy for full access to S3"
+  
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "s3:*",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+resource "aws_iam_policy_attachment" "s3_full_access_attachment" {
+  name = "s3_full_access_attachment"
+  policy_arn = aws_iam_policy.s3_full_access.arn
+  roles = aws_iam_role.codebuild_service_role.name
+}
+
+resource "aws_iam_policy" "ecr_full_access" {
+  name = "ECR_Full_Access_Policy"
+  description = "Policy for full access to ECR"
+  
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "ecr:*",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+resource "aws_iam_policy_attachment" "ecr_full_access_attachment" {
+  name = "ecr_full_access_attachment"
+  policy_arn = aws_iam_policy.ecr_full_access.arn
+  roles = aws_iam_role.codebuild_service_role.name
+}
+
+resource "aws_iam_policy" "elastic_beanstalk_full_access" {
+  name = "ElasticBeanstalk_Full_Access_Policy"
+  description = "Policy for full access to Elastic Beanstalk"
+  
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "elasticbeanstalk:*",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+resource "aws_iam_policy_attachment" "elastic_beanstalk_full_access_attachment" {
+  name = "elastic_beanstalk_full_access_attachment"
+  policy_arn = aws_iam_policy.elastic_beanstalk_full_access.arn
+  roles = aws_iam_role.codebuild_service_role.name
+}
+
 resource "aws_iam_role" "codebuild_service_role" {
   name = "codebuild_service_role"
   assume_role_policy = <<EOF
@@ -41,7 +110,7 @@ resource "aws_codebuild_project" "my_codebuild_project" {
   artifacts {
     type = "CODEPIPELINE"
     name = var.docker_image_name
-    path = "${var.docker_image_name}:latest"
+    path = "${var.docker_image_name}:${var.docker_image_name}"
   }
 
   environment {
