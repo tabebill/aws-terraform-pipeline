@@ -18,7 +18,7 @@ EOF
 resource "aws_iam_policy_attachment" "s3_full_access_attachment" {
   name = "s3_full_access_attachment"
   policy_arn = aws_iam_policy.s3_full_access.arn
-  roles = aws_iam_role.codebuild_service_role.name
+  roles = [aws_iam_role.codebuild_service_role.name]
 }
 
 resource "aws_iam_policy" "ecr_full_access" {
@@ -41,7 +41,7 @@ EOF
 resource "aws_iam_policy_attachment" "ecr_full_access_attachment" {
   name = "ecr_full_access_attachment"
   policy_arn = aws_iam_policy.ecr_full_access.arn
-  roles = aws_iam_role.codebuild_service_role.name
+  roles = [aws_iam_role.codebuild_service_role.name]
 }
 
 resource "aws_iam_policy" "elastic_beanstalk_full_access" {
@@ -64,7 +64,7 @@ EOF
 resource "aws_iam_policy_attachment" "elastic_beanstalk_full_access_attachment" {
   name = "elastic_beanstalk_full_access_attachment"
   policy_arn = aws_iam_policy.elastic_beanstalk_full_access.arn
-  roles = aws_iam_role.codebuild_service_role.name
+  roles = [aws_iam_role.codebuild_service_role.name]
 }
 
 resource "aws_iam_role" "codebuild_service_role" {
