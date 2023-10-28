@@ -1,0 +1,16 @@
+
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [
+      {
+        "name": "my-container",
+        "image": "arn:aws:ecr:us-east-1:292672040235:repository/my-ecr-repo:random-actor",
+        "portMappings": [
+          {
+            "containerPort": 80,
+            "hostPort": 80
+          }
+        ]
+      }
+    ]
+  }
