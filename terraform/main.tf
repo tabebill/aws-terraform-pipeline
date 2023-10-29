@@ -31,3 +31,14 @@ module "docker_image_codebuild" {
   github_repo_url   = local.github_repo_url
   docker_image_name = local.docker_image_name
 }
+
+module "beanstalk_app_build" {
+  source = "./modules/beanstalk-codebuild"
+  region = local.region
+}
+
+module "codepipeline" {
+  source          = "./modules/image-codebuild"
+  region          = local.region
+  repository_name = "my_ecr_repo"
+}
