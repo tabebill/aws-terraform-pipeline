@@ -79,37 +79,53 @@ resource "aws_codepipeline" "my_pipeline" {
     }
   }
 
- stage {
-   name = "Approve"
+  stage {
+    name = "Deploy"
+    action {
+      name            = "Deploy"
+      category        = "Build"
+      provider        = "CodeBuild"
+      version         = "1"
+      owner           = "AWS"
+      input_artifacts = ["build_output"]
+      configuration = {
+        ProjectName = aws_codebuild_project.my_codebuild_project2.name
+      }
+    }
+  }
 
-   action {
-     name            = "Approval"
-     category        = "Approval"
-     owner           = "AWS"
-     provider        = "Manual"
-     version         = "1"
-     input_artifacts = ["build_output"]
-     configuration = {
-       #NotificationArn = var.approve_sns_arn
-       #CustomData = var.approve_comment
-       #ExternalEntityLink = var.approve_url
-     }
-   }
- }
+  stage {
+    name = "Approve"
 
- stage {
-   name = "Deploy"
-   action {
-     name            = "Deploy"
-     category        = "Build"
-     provider        = "CodeBuild"
-     version         = "1"
-     owner           = "AWS"
-     input_artifacts = ["build_output"]
-     configuration = {
-       ProjectName = aws_codebuild_project.my_codebuild_project2.name
-     }
-   }
- }
+    action {
+      name            = "Approval"
+      category        = "Approval"
+      owner           = "AWS"
+      provider        = "Manual"
+      version         = "1"
+      input_artifacts = ["build_output"]
+      configuration = {
+        #NotificationArn = var.approve_sns_arn
+        #CustomData = var.approve_comment
+        #ExternalEntityLink = var.approve_url
+      }
+    }
+  }
+
+  stage {
+    name = "Deploy"
+    action {
+          name            = "DeployAction"
+          category        = "Deploy"
+          owner           = "AWS"
+          provider        = "CodeDeploy"
+          input_artifacts = ["build_output"]
+
+          configuration = {
+            ApplicationName          = aws_codedeploy_application.my_app.name
+            DeploymentGroupName      = aws_codedeploy_deployment_group.my_deployment_group.name
+          }
+      }
+  }
 
 }

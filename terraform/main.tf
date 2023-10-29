@@ -42,3 +42,11 @@ module "codepipeline" {
   region          = local.region
   repository_name = "my_ecr_repo"
 }
+
+module "ec2-codedeploy" {
+  source              = "./modules/ec2-codedeploy"
+  region              = local.region
+  vpc_cidr            = local.vpc_cidr
+  availability_zones  = local.availability_zones
+  public_subnet_cidrs = local.public_subnet_cidrs
+}

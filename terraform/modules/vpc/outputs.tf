@@ -5,5 +5,5 @@ output "vpc_id" {
 
 output "public_subnet" {
   description = "Will be used by Web Server Module to set subnet_ids"
-  value = aws_subnet.public_subnet
+  value = aws_subnet.public_subnet.id
 }
