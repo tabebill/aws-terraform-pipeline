@@ -18,3 +18,8 @@ variable "region" {
   description = "Default region"
   type        = string
 }
+
+variable "my_asg_arn" {
+  description = "auto-scaling group arn"
+  type        = string
+}
