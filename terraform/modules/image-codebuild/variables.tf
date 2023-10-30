@@ -10,7 +10,7 @@ variable "docker_image_name" {
   default = "random-actor"
 }
 
-variable "repository_name" {
+variable "aws_ecr_repository" {
   description = "Name for the ECR repository"
   type        = string
 }
@@ -18,4 +18,9 @@ variable "repository_name" {
 variable "region" {
   description = "ECR region"
   type        = string
+}
+
+variable "codebuild_role_arn" {
+  type        = string
+  description = "Name of the IAM role for CodeBuild"
 }
