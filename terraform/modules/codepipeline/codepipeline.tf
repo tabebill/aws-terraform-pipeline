@@ -48,18 +48,20 @@ resource "aws_codepipeline" "my_pipeline" {
   name     = "my-pipeline"
   role_arn = aws_iam_role.codepipeline_role.arn
 
+  artifact_store {
+    location = var.tfstate_bucket
+    type     = "S3"
+  }
+
   stage {
     name = "Source"
     action {
       name             = "Source"
       category         = "Source"
       owner            = "AWS"
-      provider         = CODEPIPELINE
+      provider         = "GITHUB"
       version          = "1"
       output_artifacts = ["source_output"]
-      configuration = {
-        OutputArtifacts = ["source_output"]
-      }
     }
   }
 
@@ -74,7 +76,7 @@ resource "aws_codepipeline" "my_pipeline" {
       input_artifacts = ["source_output"]
       output_artifacts = ["build_output"]
       configuration = {
-        ProjectName = aws_codebuild_project.my_codebuild_project.name
+        ProjectName = var.codebuild_project1
       }
     }
   }
@@ -89,7 +91,7 @@ resource "aws_codepipeline" "my_pipeline" {
       owner           = "AWS"
       input_artifacts = ["build_output"]
       configuration = {
-        ProjectName = aws_codebuild_project.my_codebuild_project2.name
+        ProjectName = var.codebuild_project2
       }
     }
   }
@@ -119,11 +121,12 @@ resource "aws_codepipeline" "my_pipeline" {
           category        = "Deploy"
           owner           = "AWS"
           provider        = "CodeDeploy"
+          version         = "1"
           input_artifacts = ["build_output"]
 
           configuration = {
-            ApplicationName          = aws_codedeploy_application.my_app.name
-            DeploymentGroupName      = aws_codedeploy_deployment_group.my_deployment_group.name
+            ApplicationName          = var.aws_codedeploy_app
+            DeploymentGroupName      = var.aws_codedeploy_deployment_group_name
           }
       }
   }
