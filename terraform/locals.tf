@@ -7,4 +7,6 @@ locals {
   private_subnet_cidrs = ["10.0.3.0/24", "10.0.4.0/24"]
   github_repo_url      = "https://github.com/tabebill/random-actor.git"
   docker_image_name    = "random-actor"
+  account_id           = "292672040235"
+  tfstate_bucket       = "my-terraform-state-bucket-dchg4357-2"
 }
