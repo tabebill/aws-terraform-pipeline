@@ -23,7 +23,7 @@ phases:
     commands:
       - echo Pushing the Docker image to ECR...
       - docker push $ECR_REPO_URI:$IMAGE_TAG
-      - printf '[{"name":"your-container-name","imageUri":"random-actor:$CODEBUILD_RESOLVED_SOURCE_VERSION"}]' > imagedefinitions.json
+      - printf '[{"name":"my-container","imageUri":"random-actor:$CODEBUILD_RESOLVED_SOURCE_VERSION"}]' > imagedefinitions.json
       - ECR_REPO_URI="$ECR_REPO_URI":"$IMAGE_TAG"
       - sed -i -e "s|IMAGE_URI|$ECR_REPO_URI|g" imagedefinitions.json
 
