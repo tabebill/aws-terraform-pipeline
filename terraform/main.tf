@@ -26,7 +26,7 @@ module "my_vpc" {
 
 module "docker_image_codebuild" {
   source             = "./modules/image-codebuild"
-  aws_ecr_repository = "my_ecr_repo"
+  aws_ecr_repository = local.aws_ecr_repository
   codebuild_role_arn = aws_iam_role.codebuild_service_role.arn
   region             = local.region
   github_repo_url    = local.github_repo_url
@@ -41,12 +41,12 @@ module "beanstalk_app_build" {
 }
 
 module "codepipeline" {
-  source             = "./modules/codepipeline"
-  codebuild_project1 = module.docker_image_codebuild.codebuild_project1
-  codebuild_project2 = module.beanstalk_app_build.codebuild_project2
-  aws_codedeploy_app = module.ec2-codedeploy.aws_codedeploy_app
+  source                               = "./modules/codepipeline"
+  codebuild_project1                   = module.docker_image_codebuild.codebuild_project1
+  codebuild_project2                   = module.beanstalk_app_build.codebuild_project2
+  aws_codedeploy_app                   = module.ec2-codedeploy.aws_codedeploy_app
   aws_codedeploy_deployment_group_name = module.ec2-codedeploy.aws_codedeploy_deployment_group_name
-  tfstate_bucket     = module.tf-state.tfstate_bucket
+  tfstate_bucket                       = module.tf-state.tfstate_bucket
 }
 
 module "ec2-codedeploy" {
@@ -60,7 +60,7 @@ module "ec2-codedeploy" {
 
 
 resource "aws_iam_role" "codebuild_service_role" {
-  name = "codebuild_service_role"
+  name               = "codebuild_service_role"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
