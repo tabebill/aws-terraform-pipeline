@@ -6,13 +6,22 @@ resource "aws_vpc" "my_vpc" {
 }
 
 # Public subnet
-resource "aws_subnet" "public_subnet" {
+resource "aws_subnet" "public_subnet1" {
+  vpc_id                  = aws_vpc.my_vpc.id
+  cidr_block              = var.public_subnet_cidrs[0]
+  availability_zone       = var.availability_zones[0]
+  map_public_ip_on_launch = true
+  tags = {
+    name = "Public Subnet1"
+  }
+}
+resource "aws_subnet" "public_subnet2" {
   vpc_id                  = aws_vpc.my_vpc.id
   cidr_block              = var.public_subnet_cidrs[1]
   availability_zone       = var.availability_zones[1]
   map_public_ip_on_launch = true
   tags = {
-    name = "Public Subnet"
+    name = "Public Subnet2"
   }
 }
 
@@ -26,8 +35,12 @@ resource "aws_route_table" "PublicRT" {
 }
 
 # Route table association
-resource "aws_route_table_association" "PublicRTassociation" {
-  subnet_id      = aws_subnet.public_subnet.id
+resource "aws_route_table_association" "PublicRTassociation1" {
+  subnet_id      = aws_subnet.public_subnet1.id
+  route_table_id = aws_route_table.PublicRT.id
+}
+resource "aws_route_table_association" "PublicRTassociation2" {
+  subnet_id      = aws_subnet.public_subnet2.id
   route_table_id = aws_route_table.PublicRT.id
 }
 
@@ -40,6 +53,7 @@ resource "aws_internet_gateway" "my_igw" {
 resource "aws_security_group" "my_security_group" {
     name        = "my-security-group"
     description = "Security group for SSH and HTTP"
+    vpc_id      = aws_vpc.my_vpc.id
 
   # Ingress rule for SSH
     ingress {
@@ -95,11 +109,11 @@ resource "aws_launch_template" "my_lt" {
     name = "my-launch-template"
     image_id = "ami-041feb57c611358bd"
     instance_type = "t2.micro"
-    vpc_security_group_ids = [aws_security_group.my_security_group.name]
+    vpc_security_group_ids = [aws_security_group.my_security_group.id]
     iam_instance_profile {
         name = "my-instance-profile"
     }
-    user_data = <<-EOF
+    user_data = base64encode(<<-EOF
         #!/bin/bash
         sudo su
         # Install Docker
@@ -113,6 +127,7 @@ resource "aws_launch_template" "my_lt" {
         docker pull 292672040235.dkr.ecr.us-east-1.amazonaws.com/my_ecr_repo:random-actor
         docker run -d -p 80:80 --name my-container 292672040235.dkr.ecr.us-east-1.amazonaws.com/my_ecr_repo:random-actor
         EOF
+    )
     block_device_mappings {
         # Custom block device mapping for the root volume.
         device_name = "/dev/xvda"
@@ -134,7 +149,7 @@ resource "aws_autoscaling_group" "my_asg" {
     max_size             = 3
     desired_capacity     = 2
     #availability_zones   = [var.availability_zones[0]]     #this conflicts with vpc_zone_identifier
-    vpc_zone_identifier  = [aws_subnet.public_subnet.id]
+    vpc_zone_identifier  = [aws_subnet.public_subnet1.id, aws_subnet.public_subnet2.id]
     health_check_type    = "EC2"
     default_cooldown     = 300
     target_group_arns    = [aws_lb_target_group.my_target_group.arn]
@@ -145,7 +160,7 @@ resource "aws_lb" "my_alb" {
     name               = "my-alb"
     internal           = false
     load_balancer_type = "application"
-    subnets             = [aws_subnet.public_subnet.id]
+    subnets            = [aws_subnet.public_subnet1.id, aws_subnet.public_subnet2.id]
     enable_deletion_protection = false # For demo purposes
 }
 
