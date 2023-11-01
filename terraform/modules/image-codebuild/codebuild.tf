@@ -3,8 +3,7 @@ resource "aws_codebuild_project" "my_codebuild_project" {
   service_role = var.codebuild_role_arn
 
   source {
-    type = "GITHUB"
-    location = var.github_repo_url
+    type = "CODEPIPELINE"
   }
 
   artifacts {
