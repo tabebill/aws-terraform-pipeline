@@ -122,10 +122,15 @@ resource "aws_launch_template" "my_lt" {
         
         # Authenticate with ECR (use AWS CLI v2 for this)
         aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 292672040235.dkr.ecr.us-east-1.amazonaws.com
+
+        # Install and start AWS CodeDeploy agent
+        yum install -y ruby
+        cd /home/ec2-user
+        aws s3 cp s3://aws-codedeploy-us-east-1/latest/install . --region us-east-1
+        chmod +x ./install
+        ./install auto
+        service codedeploy-agent start
         
-        # Pull and run the Docker image from ECR
-        docker pull 292672040235.dkr.ecr.us-east-1.amazonaws.com/my_ecr_repo:random-actor
-        docker run -d -p 80:80 --name my-container 292672040235.dkr.ecr.us-east-1.amazonaws.com/my_ecr_repo:random-actor
         EOF
     )
     block_device_mappings {
@@ -153,6 +158,12 @@ resource "aws_autoscaling_group" "my_asg" {
     health_check_type    = "EC2"
     default_cooldown     = 300
     target_group_arns    = [aws_lb_target_group.my_target_group.arn]
+
+    tag {
+      key                 = "DeploymentGroup"
+      value               = "MyDeploymentGroup"  # Specify your deployment group name
+      propagate_at_launch = true
+    }
 }
 
 # Create an Application Load Balancer (ALB)
