@@ -2,6 +2,7 @@ resource "aws_codebuild_project" "my_codebuild_project2" {
   name = "my-codebuild-project2"
   description = "My Beanstalk CodeBuild Project"
   service_role = var.codebuild_role_arn
+
   source {
     type = "CODEPIPELINE"  # Use CODEPIPELINE source
   }
