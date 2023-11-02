@@ -58,15 +58,15 @@ resource "aws_codepipeline" "my_pipeline" {
     action {
       name             = "Source"
       category         = "Source"
-      owner            = "AWS"
-      provider         = "GITHUB"
-      version          = "1"
+      owner            = "ThirdParty"
+      provider         = "GitHub"
+      version          = "2"
       output_artifacts = ["source_output"]
     }
   }
 
   stage {
-    name = "Apply" #"Plan"
+    name = "Build" #"Plan"
     action {
       name            = "Build"
       category        = "Build"
@@ -77,12 +77,13 @@ resource "aws_codepipeline" "my_pipeline" {
       output_artifacts = ["build_output"]
       configuration = {
         ProjectName = var.codebuild_project1
+        BuildSpec   = "modules/image-codebuild/buildspec.yaml"
       }
     }
   }
 
   stage {
-    name = "Deploy"
+    name = "Test"
     action {
       name            = "Deploy"
       category        = "Build"
@@ -92,6 +93,7 @@ resource "aws_codepipeline" "my_pipeline" {
       input_artifacts = ["build_output"]
       configuration = {
         ProjectName = var.codebuild_project2
+        BuildSpec   = "modules/beanstalk-codebuild/buildspec.yaml"
       }
     }
   }
@@ -125,8 +127,9 @@ resource "aws_codepipeline" "my_pipeline" {
           input_artifacts = ["build_output"]
 
           configuration = {
-            ApplicationName          = var.aws_codedeploy_app
-            DeploymentGroupName      = var.aws_codedeploy_deployment_group_name
+            ApplicationName     = var.aws_codedeploy_app
+            DeploymentGroupName = var.aws_codedeploy_deployment_group_name
+            AppSpec             = "modules/ec2-codedeploy/appspec.yaml"
           }
       }
   }
