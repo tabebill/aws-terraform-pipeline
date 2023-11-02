@@ -21,7 +21,7 @@ phases:
   post_build:
     commands:
       - echo Creating Beanstalk Environment and running Docker image...
-      - aws elasticbeanstalk create-environment --application-name my-application --environment-name my-environment --docker-run-file Dockerrun.aws.json
+      - aws elasticbeanstalk create-environment --application-name my-application --environment-name my-environment --docker-run-file modules/beanstalk-codebuild/Dockerrun.aws.json
       - aws elasticbeanstalk wait environment-ready --application-name my-application --environment-name my-environment
       - aws elasticbeanstalk describe-environments --application-name my-application --environment-name my-environment --query Environments[0].EndpointURL --output text
 
