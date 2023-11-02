@@ -23,3 +23,9 @@ variable "my_asg_arn" {
   description = "auto-scaling group arn"
   type        = string
 }
+
+variable "deployment_config_name" {
+  description = "deployment_config_name"
+  type        = string
+  default     = "CodeDeployDefault.AllAtOnce"
+}

@@ -1,0 +1,25 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /app
+hooks:
+  BeforeInstall:
+    - location: modules/ec2-codedeploy/set_permissions.sh
+      timeout: 300
+      runas: root
+    - location: modules/ec2-codedeploy/before-install.sh
+      timeout: 300
+      runas: root
+  AfterInstall:
+    - location: modules/ec2-codedeploy/after-install.sh
+      timeout: 300
+      runas: root
+  ApplicationStop:
+    - location: modules/ec2-codedeploy/application-stop.sh
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: modules/ec2-codedeploy/application-start.sh
+      timeout: 300
+      runas: root

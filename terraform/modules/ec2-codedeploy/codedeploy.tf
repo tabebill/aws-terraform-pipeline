@@ -33,6 +33,7 @@ resource "aws_codedeploy_app" "my_app" {
 # Define the AWS CodeDeploy Deployment Group
 resource "aws_codedeploy_deployment_group" "my_deployment_group" {
   app_name = aws_codedeploy_app.my_app.name
+  deployment_config_name = var.deployment_config_name
   deployment_group_name = "MyDeploymentGroup"
 
   auto_rollback_configuration {
@@ -42,8 +43,21 @@ resource "aws_codedeploy_deployment_group" "my_deployment_group" {
 
   service_role_arn = aws_iam_role.codedeploy_role.arn
   trigger_configuration  {
-    trigger_events      = ["DeploymentStarted", "DeploymentSuccess"]
+    trigger_events      = ["DeploymentStart", "DeploymentSuccess"]
     trigger_name        = "MyDeploymentTrigger"
-    trigger_target_arn  = var.my_asg_arn
+    trigger_target_arn  = aws_sns_topic.my_sns_topic.arn
   }
+
+  ec2_tag_set {
+    ec2_tag_filter {
+      key   = "DeploymentGroup"
+      type  = "KEY_AND_VALUE"
+      value = "MyDeploymentGroup"  # Match the ASG tag
+    }
+  }
+}
+
+# SNS Topic
+resource "aws_sns_topic" "my_sns_topic" {
+  name = "my-sns-topic"
 }
