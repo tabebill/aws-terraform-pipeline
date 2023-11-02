@@ -1,5 +1,6 @@
 resource "aws_codebuild_project" "my_codebuild_project" {
   name = "my-codebuild-project"
+  description = "My Docker image build CodeBuild Project"
   service_role = var.codebuild_role_arn
 
   source {
@@ -8,8 +9,6 @@ resource "aws_codebuild_project" "my_codebuild_project" {
 
   artifacts {
     type = "CODEPIPELINE"
-    name = var.docker_image_name
-    path = "${var.docker_image_name}:${var.docker_image_name}"
   }
 
   environment {
