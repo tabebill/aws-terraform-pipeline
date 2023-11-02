@@ -17,6 +17,8 @@ phases:
   build:
     commands:
       - echo Building the Docker image...
+      - git clone https://github.com/tabebill/random-actor.git
+      - cd random-actor
       - docker build -t $ECR_REPO_URI:$IMAGE_TAG .
 
   post_build:
