@@ -56,12 +56,18 @@ resource "aws_codepipeline" "my_pipeline" {
   stage {
     name = "Source"
     action {
-      name             = "Source"
-      category         = "Source"
-      owner            = "ThirdParty"
-      provider         = "GitHub"
-      version          = "2"
+      name            = "Source"
+      category        = "Source"
+      owner           = "ThirdParty"
+      provider        = "GitHub"
+      version         = "1"
       output_artifacts = ["source_output"]
+      configuration = {
+        Owner  = "tabebill"
+        Repo   = "aws-terraform-pipeline"
+        Branch = "cicd"
+        Location = "terraform"
+      }
     }
   }
 
