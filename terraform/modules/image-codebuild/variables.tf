@@ -24,3 +24,8 @@ variable "codebuild_role_arn" {
   type        = string
   description = "Name of the IAM role for CodeBuild"
 }
+
+variable "tfstate_bucket" {
+  type        = string
+  description = "tfstate bucket which would have an artifacts prefix for artifacts"
+}

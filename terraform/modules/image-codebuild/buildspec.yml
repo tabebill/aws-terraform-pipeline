@@ -29,8 +29,3 @@ phases:
       - ECR_REPO_URI="$ECR_REPO_URI":"$IMAGE_TAG"
       - sed -i -e "s|IMAGE_URI|$ECR_REPO_URI|g" imagedefinitions.json
 
-artifacts:
-  files: imagedefinitions.json
-
-outputs:
-  docker_image_uri: random-actor
