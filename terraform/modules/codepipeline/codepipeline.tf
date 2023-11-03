@@ -30,6 +30,13 @@ data "aws_iam_policy_document" "codepipeline_policy_doc" {
     resources = ["*"]
     effect    = "Allow"
   }
+  # Add a new statement for CodeStar Connections permissions
+  statement {
+    sid       = ""
+    actions   = ["codestar-connections:CreateConnection", "codestar-connections:GetConnection", "codestar-connections:ListConnections"]
+    resources = ["*"]
+    effect    = "Allow"
+  }
 }
 
 resource "aws_iam_policy" "codepipeline_policy" {
@@ -116,7 +123,7 @@ resource "aws_codepipeline" "my_pipeline" {
       owner           = "AWS"
       provider        = "Manual"
       version         = "1"
-      input_artifacts = ["build_output"]
+      #input_artifacts = ["build_output"]
       configuration = {
         #NotificationArn = var.approve_sns_arn
         #CustomData = var.approve_comment
@@ -138,7 +145,7 @@ resource "aws_codepipeline" "my_pipeline" {
       configuration = {
         ApplicationName     = var.aws_codedeploy_app
         DeploymentGroupName = var.aws_codedeploy_deployment_group_name
-        AppSpec             = "modules/ec2-codedeploy/appspec.yaml"
+        #AppSpec             = "modules/ec2-codedeploy/appspec.yaml"
       }
       }
   }
