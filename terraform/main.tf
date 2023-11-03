@@ -31,6 +31,7 @@ module "docker_image_codebuild" {
   region             = local.region
   github_repo_url    = local.github_repo_url
   docker_image_name  = local.docker_image_name
+  tfstate_bucket     = local.tfstate_bucket
 }
 
 module "beanstalk_app_build" {
@@ -38,6 +39,7 @@ module "beanstalk_app_build" {
   region             = local.region
   account_id         = local.account_id
   codebuild_role_arn = aws_iam_role.codebuild_service_role.arn
+  tfstate_bucket     = local.tfstate_bucket
 }
 
 module "codepipeline" {
