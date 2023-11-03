@@ -47,6 +47,7 @@ module "codepipeline" {
   aws_codedeploy_app                   = module.ec2-codedeploy.aws_codedeploy_app
   aws_codedeploy_deployment_group_name = module.ec2-codedeploy.aws_codedeploy_deployment_group_name
   tfstate_bucket                       = module.tf-state.tfstate_bucket
+  aws_codestarconnections_connection   = local.aws_codestarconnections_connection
 }
 
 module "ec2-codedeploy" {
