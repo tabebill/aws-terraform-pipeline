@@ -1,7 +1,7 @@
 # Define the GitHub repository URL
 variable "github_repo_url" {
   type    = string
-  default = "https://github.com/tabebill/random-actor.git"
+  default = "https://github.com/tabebill/aws-terraform-pipeline.git"
 }
 
 # Define Docker image name
