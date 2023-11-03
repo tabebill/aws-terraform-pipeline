@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /app
+    destination: /
 hooks:
   BeforeInstall:
     - location: modules/ec2-codedeploy/set_permissions.sh
