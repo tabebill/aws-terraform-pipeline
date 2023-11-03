@@ -12,3 +12,8 @@ variable "account_id" {
   type        = string
   description = "AWS account ID"
 }
+
+variable "github_repo_url" {
+  type    = string
+  default = "https://github.com/tabebill/aws-terraform-pipeline.git"
+}

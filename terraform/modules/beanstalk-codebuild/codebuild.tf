@@ -3,10 +3,6 @@ resource "aws_codebuild_project" "my_codebuild_project2" {
   description = "My Beanstalk CodeBuild Project"
   service_role = var.codebuild_role_arn
 
-  source {
-    type = "CODEPIPELINE"  # Use CODEPIPELINE source
-  }
-
   environment {
     compute_type = "BUILD_GENERAL1_SMALL"
     image = "aws/codebuild/standard:5.0"
@@ -26,10 +22,17 @@ resource "aws_codebuild_project" "my_codebuild_project2" {
     type = "CODEPIPELINE"
   }
 
+  source {
+    type      = "GITHUB"
+    location  = var.github_repo_url
+    buildspec = "terraform/modules/beanstalk-codebuild/buildspec.yml"
+  }
+  source_version = "cicd"
+
   cache {
     type = "LOCAL"  # or "S3"
     modes = ["LOCAL_SOURCE_CACHE"]  # Specify one or more cache modes
   }
 
-  build_timeout = "30"
+  build_timeout = "300"
 }
