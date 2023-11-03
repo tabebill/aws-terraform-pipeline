@@ -17,3 +17,8 @@ variable "github_repo_url" {
   type    = string
   default = "https://github.com/tabebill/aws-terraform-pipeline.git"
 }
+
+variable "tfstate_bucket" {
+  type        = string
+  description = "tfstate bucket which would have an artifacts prefix for artifacts"
+}

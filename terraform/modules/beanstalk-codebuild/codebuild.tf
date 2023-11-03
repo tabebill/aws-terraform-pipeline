@@ -20,10 +20,14 @@ resource "aws_codebuild_project" "my_codebuild_project2" {
 
   artifacts {
     type = "CODEPIPELINE"
+    #artifacts_override {
+    #  type = "S3"
+    #  location = "${var.tfstat_bucket}/artifacts"
+    #}
   }
 
   source {
-    type      = "GITHUB"
+    type      = "CODEPIPELINE"
     location  = var.github_repo_url
     buildspec = "terraform/modules/beanstalk-codebuild/buildspec.yml"
   }
