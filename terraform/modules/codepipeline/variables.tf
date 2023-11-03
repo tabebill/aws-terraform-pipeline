@@ -22,3 +22,8 @@ variable "tfstate_bucket" {
     type        = string
     description = "name of the tfstate bucket which is also the codepipeline artifact store"
 }
+
+variable "aws_codestarconnections_connection" {
+    type        = string
+    description = "arn of my codestar connection to github"
+}

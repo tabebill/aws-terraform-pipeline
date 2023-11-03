@@ -44,6 +44,11 @@ resource "aws_iam_role_policy_attachment" "attachment" {
   role       = aws_iam_role.codepipeline_role.id
 }
 
+#resource "aws_codestarconnections_connection" "my-connection" {
+#  name          = "my-connection"
+#  provider_type = "GitHub"
+#}
+
 resource "aws_codepipeline" "my_pipeline" {
   name     = "my-pipeline"
   role_arn = aws_iam_role.codepipeline_role.arn
@@ -58,15 +63,15 @@ resource "aws_codepipeline" "my_pipeline" {
     action {
       name            = "Source"
       category        = "Source"
-      owner           = "ThirdParty"
-      provider        = "GitHub"
+      owner           = "AWS"
+      provider        = "CodeStarSourceConnection"
       version         = "1"
       output_artifacts = ["source_output"]
       configuration = {
-        Owner  = "tabebill"
-        Repo   = "aws-terraform-pipeline"
-        Branch = "cicd"
-        Location = "terraform"
+        FullRepositoryId  = "tabebill/aws-terraform-pipeline"
+        BranchName = "cicd"
+        # ConnectionArn = aws_codestarconnections_connection.my_connection.arn
+        ConnectionArn = var.aws_codestarconnections_connection
       }
     }
   }
@@ -83,7 +88,6 @@ resource "aws_codepipeline" "my_pipeline" {
       output_artifacts = ["build_output"]
       configuration = {
         ProjectName = var.codebuild_project1
-        BuildSpec   = "modules/image-codebuild/buildspec.yaml"
       }
     }
   }
@@ -99,7 +103,6 @@ resource "aws_codepipeline" "my_pipeline" {
       input_artifacts = ["build_output"]
       configuration = {
         ProjectName = var.codebuild_project2
-        BuildSpec   = "modules/beanstalk-codebuild/buildspec.yaml"
       }
     }
   }
@@ -125,18 +128,18 @@ resource "aws_codepipeline" "my_pipeline" {
   stage {
     name = "Deploy"
     action {
-          name            = "DeployAction"
-          category        = "Deploy"
-          owner           = "AWS"
-          provider        = "CodeDeploy"
-          version         = "1"
-          input_artifacts = ["build_output"]
+      name            = "DeployAction"
+      category        = "Deploy"
+      owner           = "AWS"
+      provider        = "CodeDeploy"
+      version         = "1"
+      input_artifacts = ["build_output"]
 
-          configuration = {
-            ApplicationName     = var.aws_codedeploy_app
-            DeploymentGroupName = var.aws_codedeploy_deployment_group_name
-            AppSpec             = "modules/ec2-codedeploy/appspec.yaml"
-          }
+      configuration = {
+        ApplicationName     = var.aws_codedeploy_app
+        DeploymentGroupName = var.aws_codedeploy_deployment_group_name
+        AppSpec             = "modules/ec2-codedeploy/appspec.yaml"
+      }
       }
   }
 
