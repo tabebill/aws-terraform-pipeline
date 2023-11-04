@@ -71,7 +71,7 @@ resource "aws_codepipeline" "my_pipeline" {
       name            = "Source"
       category        = "Source"
       owner           = "AWS"
-      provider        = "CodeStarSourceConnection"
+      provider        = "CodeStarSourceConnection"  #Remember to create the codestar connection in your account, then update this terraform configuration files with teh actual arn in the locals.tf Else create the resource and link with your github repository and branch in the console after running terraform apply
       version         = "1"
       output_artifacts = ["source_output"]
       configuration = {
