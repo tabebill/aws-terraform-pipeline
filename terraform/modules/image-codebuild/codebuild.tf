@@ -4,14 +4,14 @@ resource "aws_codebuild_project" "my_codebuild_project" {
   service_role = var.codebuild_role_arn
 
   source {
-    type      = "CODEPIPELINE"
+    type      = "GITHUB"
     location  = var.github_repo_url
     buildspec = "terraform/modules/image-codebuild/buildspec.yml"
   }
   source_version = "cicd"
 
   artifacts {
-    type = "CODEPIPELINE"
+    type = "NO_ARTIFACTS"
     #artifacts_override {
     #  type = "S3"
     # location = "${var.tfstat_bucket}/artifacts"
